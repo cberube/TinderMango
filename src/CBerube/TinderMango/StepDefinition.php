@@ -29,6 +29,11 @@ class StepDefinition
         $this->type = $this->determineTypeFromDefinition($definition);
 
         $this->regex = trim(substr($definition, strlen($this->type) + 1));
+
+        $regexPattern = '~/\\^.*\\$/~';
+        if (preg_match($regexPattern, $this->regex) == 1) {
+            $this->regex = substr(substr($this->regex, 2), 0, -2);
+        }
     }
 
     private function determineTypeFromDefinition($definition)

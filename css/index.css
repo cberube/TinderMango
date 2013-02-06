@@ -6,3 +6,28 @@ mark
     -moz-border-radius: 6px;
     -webkit-border-radius: 6px;
 }
+
+.resultList
+{
+    list-style-type: none;
+    padding: 0;
+}
+
+.resultList .title
+{
+    font-weight: bold;
+    border: 1px solid silver;
+    padding: 2px;
+    margin: 10px 0;
+}
+
+.resultList .function
+{
+    font-family: monospace;
+    font-size: 10pt;
+}
+
+.resultList li
+{
+    margin-bottom: 1em;
+}

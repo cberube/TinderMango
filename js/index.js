@@ -23,7 +23,7 @@ function BehatSearchController($scope)
             function () {
                 $currentScope.requestSearchResults(currentChangeId);
             },
-            100
+            200
         );
     };
 

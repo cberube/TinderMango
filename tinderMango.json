@@ -1,0 +1,6 @@
+{
+    "phpPath": "/usr/bin/php",
+    "behatWorkPath": "/home/ec2-user/Behat",
+    "behatBinaryPath": "/home/ec2-user/Behat/bin/behat",
+    "stepDefinitionPath": "/tmp/tinderMango.steps.json"
+}
