@@ -1,0 +1,16 @@
+{
+    "name": "cberube/tinder-mango",
+    "authors": [
+        {
+            "name": "CBerube",
+            "email": "cberube@gmail.com"
+        }
+    ],
+    "require": {
+    },
+    "autoload": {
+        "psr-0": {
+            "CBerube": "src"
+        }
+    }
+}
