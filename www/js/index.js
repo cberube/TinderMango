@@ -1,6 +1,42 @@
 var BehatSearchApp = angular.module('BehatSearchApp', ['ngSanitize']);
 
-function BehatSearchController($scope)
+String.prototype.repeat = function(num)
+{
+    return new Array(num + 1).join(this);
+};
+
+BehatSearchApp.factory(
+    "messageDispatcher",
+    function($rootScope)
+    {
+        var dispatcher = {};
+
+        dispatcher.content = null;
+
+        dispatcher.dispatchAddStep = function(content)
+        {
+            this.content = content;
+            $rootScope.$broadcast('addStep')
+        };
+
+        return dispatcher;
+    }
+);
+
+BehatSearchApp.filter(
+    "padLeft",
+    function() {
+        return function(text, length) {
+            if (text.length < length) {
+                text = ' '.repeat((length - text.length)) + text;
+            }
+
+            return text;
+        }
+    }
+);
+
+function BehatSearchController($scope, messageDispatcher)
 {
     $scope.results = [];
     $scope.search = '';
@@ -61,4 +97,9 @@ function BehatSearchController($scope)
             }
         )
     };
+
+    $scope.addStepToScenario = function(step)
+    {
+        messageDispatcher.dispatchAddStep(step);
+    }
 }

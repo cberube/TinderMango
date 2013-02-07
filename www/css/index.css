@@ -11,6 +11,7 @@ mark
 {
     list-style-type: none;
     padding: 0;
+    margin-left: 0;
 }
 
 .resultList .title
@@ -30,4 +31,20 @@ mark
 .resultList li
 {
     margin-bottom: 1em;
+}
+
+.tab-content
+{
+    overflow: visible;
+    margin-bottom: 200px;
+}
+
+.stepList .btn-group
+{
+    width: 85px;
+}
+
+.stepList .btn-group .btn
+{
+    width: 86px;
 }

@@ -1,10 +1,10 @@
 <?php
 
-require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 use CBerube\TinderMango\StepDefinition;
 
-$configurationSource = file_get_contents("tinderMango.json");
+$configurationSource = file_get_contents(__DIR__ . "/../tinderMango.json");
 $configuration = json_decode($configurationSource, true);
 
 $stepDefinitionListSource = file_get_contents($configuration['stepDefinitionPath']);
@@ -31,12 +31,12 @@ foreach ($stepDefinitionList as $stepDefinition) {
         $stepDefinition->markedDescription = preg_replace(
             $searchPattern,
             $replacePattern,
-            $stepDefinition->description
+            htmlentities($stepDefinition->description)
         );
         $stepDefinition->markedRegex = preg_replace(
             $searchPattern,
             $replacePattern,
-            $stepDefinition->regex
+            htmlentities($stepDefinition->regex)
         );
 
         $matchedStepDefinitions[] = $stepDefinition;

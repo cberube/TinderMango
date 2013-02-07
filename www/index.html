@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+
+<html ng-app="BehatSearchApp">
+
+<head>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.4/angular.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.4/angular-sanitize.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+
+    <script src="js/index.js"></script>
+    <script src="js/BehatScenarioController.js"></script>
+
+    <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/css/bootstrap-combined.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/index.css">
+</head>
+
+<body>
+    <div class="navbar">
+        <div class="navbar-inner">
+            <a class="brand">TinderMango</a>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span6" ng-controller="BehatScenarioController">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="#stepEditor" data-toggle="tab">Edit Steps</a></li>
+                    <li><a href="#rawText" data-toggle="tab">Raw Text</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="stepEditor">
+                        <ul class="stepList unstyled">
+                            <li ng-repeat="step in steps">
+                                <div class="input-prepend input-append">
+                                    <div class="btn-group">
+                                        <button class="btn dropdown-toggle" data-toggle="dropdown">
+                                            {{step.type}}
+                                            <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a href="#" ng-click="step.type = 'Given'">Given</a></li>
+                                            <li><a href="#" ng-click="step.type = 'When'">When</a></li>
+                                            <li><a href="#" ng-click="step.type = 'Then'">Then</a></li>
+                                            <li class="divider"></li>
+                                            <li><a href="#" ng-click="step.type = 'And'">And</a></li>
+                                            <li><a href="#" ng-click="step.type = 'But'">But</a></li>
+                                        </ul>
+                                    </div>
+                                    <input type="text" ng-model="step.content" placeholder="{{step.reference}}">
+                                    <button class="btn" ng-click="step.content = step.reference"><i class="icon icon-refresh"></i></button>
+                                    <button class="btn" ng-click="moveStepUp($index)"><i class="icon icon-chevron-up"></i></button>
+                                    <button class="btn" ng-click="moveStepDown($index)"><i class="icon icon-chevron-down"></i></button>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="tab-pane" id="rawText">
+                        <pre class=""><div ng-repeat="step in steps">{{step.type | padLeft:5}} {{step.content}}</div></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="span6" ng-controller="BehatSearchController">
+                <div class="input-prepend">
+                    <span class="add-on"><i class='icon icon-search'></i></span>
+                    <input type="text" name="search" id="search" ng-model="search" ng-change="doSearch()">
+                </div>
+
+                <ul class="resultList">
+                    <li ng-repeat="result in results">
+                        <div class="title" ng-bind-html="result.markedRegex"></div>
+                        <div class="description" ng-bind-html="result.markedDescription"></div>
+                        <div class="function">{{result.function}}</div>
+                        <button type="button" ng-click="addStepToScenario(result)">Add</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>
