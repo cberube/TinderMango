@@ -14,12 +14,24 @@ mark
     margin-left: 0;
 }
 
+.resultList>li>a
+{
+    line-height: 20px;
+    color: black;
+    border: 1px solid gainsboro;
+}
+
 .resultList .title
 {
     font-weight: bold;
-    border: 1px solid silver;
-    padding: 2px;
-    margin: 10px 0;
+    border-bottom: 1px solid silver;
+    padding: 0 0 4px 0;
+    margin-bottom: 10px;
+}
+
+.resultList .type
+{
+    margin-right: 0.5ex;
 }
 
 .resultList .function
@@ -47,4 +59,29 @@ mark
 .stepList .btn-group .btn
 {
     width: 86px;
+}
+
+.stepList div.row
+{
+    margin-left: 85px;
+    margin-right: 127px;
+}
+
+.stepList div.row input
+{
+    width: 100%;
+}
+
+.zeroclipboard-is-hover
+{
+    color: #ffffff;
+    background-color: #0044cc;
+    background-image: none;
+}
+
+.zeroclipboard-is-active
+{
+    color: #ffffff;
+    background-color: #003399;
+    background-image: none;
 }

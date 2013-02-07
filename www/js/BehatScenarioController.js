@@ -18,6 +18,11 @@ function BehatScenarioController($scope, messageDispatcher)
     $scope.addStep = function(stepData)
     {
         $scope.steps.push(stepData);
+        setTimeout(
+            function () { jQuery('.tooltipSource').tooltip(); },
+            100
+        );
+
     };
 
     $scope.moveStepUp = function($index)
@@ -39,4 +44,18 @@ function BehatScenarioController($scope, messageDispatcher)
             $scope.steps[$index + 1] = stepToMove;
         }
     };
+
+    $scope.getRawText = function()
+    {
+        var text = '';
+        var i;
+
+        for (i = 0; i < $scope.steps.length; i++) {
+            text +=
+                $scope.steps[i].type.leftPad(5) + ' ' +
+                $scope.steps[i].content + "\r\n";
+        }
+
+        return text;
+    }
 }

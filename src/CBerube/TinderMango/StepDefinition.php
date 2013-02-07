@@ -18,8 +18,14 @@ class StepDefinition
     public function __construct($definition, $function, $description)
     {
         $this->decomposeDefinition($definition);
-        $this->function = $function;
-        $this->description = $description;
+        $this->function = $this->trimAndRemoveLeadingCharacter($function, '#');
+        $this->description = $this->trimAndRemoveLeadingCharacter($description, '-');
+    }
+
+    private function trimAndRemoveLeadingCharacter($value, $leading)
+    {
+        $escapedLeading = preg_quote($leading);
+        return trim(preg_replace("/$escapedLeading/", '', $value, 1));
     }
 
     private function decomposeDefinition($definition)

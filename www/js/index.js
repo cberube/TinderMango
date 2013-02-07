@@ -5,6 +5,15 @@ String.prototype.repeat = function(num)
     return new Array(num + 1).join(this);
 };
 
+String.prototype.leftPad = function(length)
+{
+    if (this.length < length) {
+        return ' '.repeat((length - this.length)) + this;
+    }
+
+    return this;
+};
+
 BehatSearchApp.factory(
     "messageDispatcher",
     function($rootScope)
@@ -103,3 +112,14 @@ function BehatSearchController($scope, messageDispatcher)
         messageDispatcher.dispatchAddStep(step);
     }
 }
+
+jQuery(function() {
+    var clip = new ZeroClipboard(
+        jQuery('#copyToClipboardButton'),
+        {
+            moviePath: 'swf/ZeroClipboard.swf'
+        }
+    );
+
+    jQuery('.tooltipSource').tooltip();
+});

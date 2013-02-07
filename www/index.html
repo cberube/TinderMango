@@ -11,6 +11,7 @@
     <script src="js/BehatScenarioController.js"></script>
 
     <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/css/bootstrap-combined.min.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.0.2/css/font-awesome.css" rel="stylesheet">
     <link rel="stylesheet" href="css/index.css">
 </head>
 
@@ -31,31 +32,39 @@
                     <div class="tab-pane active" id="stepEditor">
                         <ul class="stepList unstyled">
                             <li ng-repeat="step in steps">
-                                <div class="input-prepend input-append">
-                                    <div class="btn-group">
-                                        <button class="btn dropdown-toggle" data-toggle="dropdown">
-                                            {{step.type}}
-                                            <span class="caret"></span>
-                                        </button>
-                                        <ul class="dropdown-menu">
-                                            <li><a href="#" ng-click="step.type = 'Given'">Given</a></li>
-                                            <li><a href="#" ng-click="step.type = 'When'">When</a></li>
-                                            <li><a href="#" ng-click="step.type = 'Then'">Then</a></li>
-                                            <li class="divider"></li>
-                                            <li><a href="#" ng-click="step.type = 'And'">And</a></li>
-                                            <li><a href="#" ng-click="step.type = 'But'">But</a></li>
-                                        </ul>
-                                    </div>
-                                    <input type="text" ng-model="step.content" placeholder="{{step.reference}}">
-                                    <button class="btn" ng-click="step.content = step.reference"><i class="icon icon-refresh"></i></button>
+                                <div class="pull-left btn-group input-prepend">
+                                    <button class="btn dropdown-toggle" data-toggle="dropdown">
+                                        {{step.type}}
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="#" ng-click="step.type = 'Given'">Given</a></li>
+                                        <li><a href="#" ng-click="step.type = 'When'">When</a></li>
+                                        <li><a href="#" ng-click="step.type = 'Then'">Then</a></li>
+                                        <li class="divider"></li>
+                                        <li><a href="#" ng-click="step.type = 'And'">And</a></li>
+                                        <li><a href="#" ng-click="step.type = 'But'">But</a></li>
+                                    </ul>
+                                </div>
+                                <div class="pull-right input-append">
+                                    <button class="btn tooltipSource" ng-click="step.content = step.reference" title="{{step.reference}}" data-placement="left">
+                                        <i class="icon icon-undo"></i>
+                                    </button>
                                     <button class="btn" ng-click="moveStepUp($index)"><i class="icon icon-chevron-up"></i></button>
                                     <button class="btn" ng-click="moveStepDown($index)"><i class="icon icon-chevron-down"></i></button>
+                                </div>
+                                <div class="row input-prepend input-append">
+                                    <input type="text" ng-model="step.content">
                                 </div>
                             </li>
                         </ul>
                     </div>
                     <div class="tab-pane" id="rawText">
-                        <pre class=""><div ng-repeat="step in steps">{{step.type | padLeft:5}} {{step.content}}</div></pre>
+                        <pre id="rawTextContent" ng-bind="getRawText()"></pre>
+                        <button id="copyToClipboardButton" class="btn btn-small btn-primary" data-clipboard-target="rawTextContent">
+                            <i class="icon icon-copy"></i>
+                            Copy to clipboard
+                        </button>
                     </div>
                 </div>
             </div>
@@ -66,12 +75,15 @@
                     <input type="text" name="search" id="search" ng-model="search" ng-change="doSearch()">
                 </div>
 
-                <ul class="resultList">
-                    <li ng-repeat="result in results">
-                        <div class="title" ng-bind-html="result.markedRegex"></div>
-                        <div class="description" ng-bind-html="result.markedDescription"></div>
-                        <div class="function">{{result.function}}</div>
-                        <button type="button" ng-click="addStepToScenario(result)">Add</button>
+                <ul class="resultList nav nav-pills nav-stacked">
+                    <li ng-repeat="result in results" class="">
+                        <a ng-click="addStepToScenario(result)">
+                            <div class="type muted pull-left">{{result.type}}</div>
+                            <div class="title" ng-bind-html="result.markedRegex"></div>
+                            <div class="description" ng-bind-html="result.markedDescription"></div>
+                            <div class="muted pull-right function">{{result.function}}</div>
+                            <br class="clear-fix">
+                        </a>
                     </li>
                 </ul>
             </div>
@@ -79,6 +91,7 @@
     </div>
 
     <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js"></script>
+    <script src="js/ZeroClipboard.min.js"></script>
 </body>
 
 </html>
