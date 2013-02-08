@@ -51,14 +51,14 @@ mark
     margin-bottom: 200px;
 }
 
-.stepList .btn-group
+.stepList .stepTypeButton.btn-group
 {
-    width: 85px;
+    width: 75px;
 }
 
-.stepList .btn-group .btn
+.stepList .stepTypeButton.btn-group .btn
 {
-    width: 86px;
+    width: 75px;
 }
 
 .stepList div.row
@@ -70,6 +70,14 @@ mark
 .stepList div.row input
 {
     width: 100%;
+}
+
+.stepList > li
+{
+    color: #666;
+    border-color: #DDD;
+    background-color: #F0F0F0;
+    margin-bottom: 5px;
 }
 
 .zeroclipboard-is-hover
@@ -84,4 +92,30 @@ mark
     color: #ffffff;
     background-color: #003399;
     background-image: none;
+}
+
+.btn-mini .caret
+{
+    margin-top: 8px;
+}
+
+input.shortText
+{
+    margin-bottom: 0;
+}
+
+.longTextContainer
+{
+    margin-left: 79px;
+    margin-right: 14px;
+    margin-top: 10px;
+}
+
+textarea.longText
+{
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    max-height: 400px;
+    font-family: monospace;
 }

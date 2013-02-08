@@ -22,4 +22,14 @@ abstract class AbstractPatternNodeContainer
     {
         return $this->nodeList;
     }
+
+    public function replaceNode($index, PatternNodeInterface $newNode)
+    {
+        array_splice($this->nodeList, $index, 1, array($newNode));
+    }
+
+    public function replaceLastNode(PatternNodeInterface $newNode)
+    {
+        $this->replaceNode(count($this->nodeList) - 1, $newNode);
+    }
 }

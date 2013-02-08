@@ -45,6 +45,15 @@ BehatSearchApp.filter(
     }
 );
 
+BehatSearchApp.filter(
+    "firstItem",
+    function() {
+        return function(array) {
+            return array[0];
+        }
+    }
+);
+
 function BehatSearchController($scope, messageDispatcher)
 {
     $scope.results = [];

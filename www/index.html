@@ -7,6 +7,8 @@
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.4/angular-sanitize.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
 
+    <script src="js/jquery.autosize-min.js"></script>
+
     <script src="js/index.js"></script>
     <script src="js/BehatScenarioController.js"></script>
 
@@ -31,8 +33,13 @@
                 <div class="tab-content">
                     <div class="tab-pane active" id="stepEditor">
                         <ul class="stepList unstyled">
-                            <li ng-repeat="step in steps">
-                                <div class="pull-left btn-group input-prepend">
+                            <li ng-repeat="step in steps" class="alert">
+                                <div class="btn-group">
+                                    <button class="btn btn-mini btn-danger" ng-click="deleteStep($index)"><i class="icon icon-trash"></i></button>
+                                    <button class="btn btn-mini btn-inverse" ng-click="moveStepUp($index)"><i class="icon icon-chevron-up"></i></button>
+                                    <button class="btn btn-mini btn-inverse" ng-click="moveStepDown($index)"><i class="icon icon-chevron-down"></i></button>
+                                </div>
+                                <div class="stepTypeButton btn-group">
                                     <button class="btn dropdown-toggle" data-toggle="dropdown">
                                         {{step.type}}
                                         <span class="caret"></span>
@@ -46,16 +53,29 @@
                                         <li><a href="#" ng-click="step.type = 'But'">But</a></li>
                                     </ul>
                                 </div>
-                                <div class="pull-right input-append">
-                                    <button class="btn tooltipSource" ng-click="step.content = step.reference" title="{{step.reference}}" data-placement="left">
-                                        <i class="icon icon-undo"></i>
-                                    </button>
-                                    <button class="btn" ng-click="moveStepUp($index)"><i class="icon icon-chevron-up"></i></button>
-                                    <button class="btn" ng-click="moveStepDown($index)"><i class="icon icon-chevron-down"></i></button>
-                                </div>
-                                <div class="row input-prepend input-append">
-                                    <input type="text" ng-model="step.content">
-                                </div>
+
+                                <span ng-repeat="ui in step.uiElements">
+                                    <span ng-switch on="ui.type">
+                                        <span ng-switch-when="text">{{ui.value}}</span>
+                                        <button ng-switch-when="toggle" ng-click="toggleUiValue(step.currentIndex, $index)" class="btn active" data-toggle="button">{{ui.value}}</button>
+                                        <input class="shortText" ng-model="ui.currentValue" ng-switch-when="shortText" type="text" placeholder="{{ui.value}}">
+                                        <div ng-switch-when="longText" class="longTextContainer">
+                                            <textarea class="longText" ng-model="ui.currentValue">{{ui.value}}</textarea>
+                                        </div>
+
+                                        <div ng-switch-when="simpleChoice" class="btn-group">
+                                            <button class="btn dropdown-toggle" data-toggle="dropdown">
+                                                {{ui.currentValue}}
+                                                <span class="caret"></span>
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li ng-repeat="value in ui.value">
+                                                    <a href="#" ng-click="ui.currentValue = value">{{value}}</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </span>
+                                </span>
                             </li>
                         </ul>
                     </div>

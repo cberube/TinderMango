@@ -3,7 +3,6 @@
 namespace CBerube\TinderMango\RegularExpression;
 
 use CBerube\TinderMango\RegularExpression\PatternNode\Literal;
-use CBerube\TinderMango\RegularExpression\PatternNode\Alternation;
 use CBerube\TinderMango\RegularExpression\Parser\Context;
 
 class Parser
@@ -23,7 +22,7 @@ class Parser
     private function parseBareExpression(Context $context)
     {
         if ($this->doesPatternContainAlternations($context)) {
-            $alternation = new Alternation();
+            $alternation = new PatternNode\Group\Alternation();
 
             $subexpressionList = $this->splitPatternIntoAlternatives($context);
 
@@ -105,12 +104,61 @@ class Parser
                 //  A parenthesis indicates the start of a group
                 $this->formLiteral($parent, $expression);
 
-                $capturingGroup = new PatternNode\CapturingGroup();
+                //  To determine if we are a capturing or non-capturing group, we need the next two characters
+                $lookAheadTokens = $this->peek($expressionStack, 2);
+
+                if ($lookAheadTokens == '?:') {
+                    $group = new PatternNode\Group\NonCapturingGroup();
+                    $this->pop($expressionStack, strlen($lookAheadTokens));
+                } else {
+                    $group = new PatternNode\Group\CapturingGroup();
+                }
+
                 $subexpression = $this->accumulateUntil($expressionStack, ')');
-                $subcontext = new Context($subexpression, $capturingGroup);
+                $subcontext = new Context($subexpression, $group);
                 $this->parseBareExpression($subcontext);
 
-                $parent->addNode($capturingGroup);
+                $parent->addNode($group);
+            } elseif ($token == '^') {
+                //  The caret is the start-of-pattern (or start-of-line) anchor
+                //  @todo: Handle the negation operator inside a character class
+                $this->formLiteral($parent, $expression);
+                $parent->addNode(new PatternNode\Anchor\StartAnchor());
+            } elseif ($token == '$') {
+                //  The dollar sign is the end-of-patter (or end-of-line) anchor
+                $this->formLiteral($parent, $expression);
+                $parent->addNode(new PatternNode\Anchor\EndAnchor());
+            } elseif ($token == '+' || $token == '?' || $token == '*') {
+                $this->formLiteral($parent, $expression);
+                $nodeList = $parent->getNodeList();
+
+                /** @var $previousNode \CBerube\TinderMango\RegularExpression\PatternNode\PatternNodeInterface */
+                $previousNode = $nodeList[count($nodeList) - 1];
+
+                //  If the previous node was a literal, we need to split it into two literals, since the
+                //  quantifier will apply only to the last character
+                if ($previousNode instanceof Literal) {
+                    $previousLiteralValue = strval($previousNode);
+
+                    $previousLiteral = new Literal(
+                        substr($previousLiteralValue, 0, -1),
+                        $previousNode->getMinimumOccurrences(),
+                        $previousNode->getMaximumOccurrences()
+                    );
+
+                    $previousNode = new Literal(substr($previousLiteralValue, -1));
+
+                    $parent->replaceLastNode($previousLiteral);
+                    $parent->addNode($previousNode);
+                }
+
+                if ($token == '+') {
+                    $previousNode->setOccurrences(1, null);
+                } elseif ($token == '?') {
+                    $previousNode->setOccurrences(0, 1);
+                } elseif ($token == '*') {
+                    $previousNode->setOccurrences(0, null);
+                }
             } else {
                 //  Accumulate a plain old literal token and continue
                 $expression .= $token;
@@ -144,5 +192,28 @@ class Parser
         }
 
         $expression = '';
+    }
+
+    private function peek(&$expressionStack, $length = 1)
+    {
+        $token = '';
+        $expressionLength = count($expressionStack);
+
+        for ($i = 0; $i < $length; $i++) {
+            if ($i >= $expressionLength) {
+                break;
+            }
+
+            $token .= $expressionStack[$i];
+        }
+
+        return $token;
+    }
+
+    private function pop(&$expressionStack, $count = 1)
+    {
+        while ($count-- > 0 && !empty($expressionStack)) {
+            array_shift($expressionStack);
+        }
     }
 }

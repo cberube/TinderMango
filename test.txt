@@ -1,0 +1,5 @@
+Given a file named "oranges.txt" with:
+        """
+        Things in it
+        """
+

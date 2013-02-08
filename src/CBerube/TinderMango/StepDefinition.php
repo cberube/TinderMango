@@ -11,6 +11,7 @@ class StepDefinition
     );
 
     public $regex;
+    public $rawRegex;
     public $type;
     public $function;
     public $description;
@@ -35,10 +36,13 @@ class StepDefinition
         $this->type = $this->determineTypeFromDefinition($definition);
 
         $this->regex = trim(substr($definition, strlen($this->type) + 1));
+        $this->rawRegex = $this->regex;
 
         $regexPattern = '~/\\^.*\\$/~';
         if (preg_match($regexPattern, $this->regex) == 1) {
             $this->regex = substr(substr($this->regex, 2), 0, -2);
+        } else {
+            $this->rawRegex = "/^{$this->rawRegex}$/";
         }
     }
 

@@ -1,9 +1,12 @@
 <?php
 
 use CBerube\TinderMango\RegularExpression\Parser;
-use CBerube\TinderMango\RegularExpression\PatternNode\Alternation;
-use CBerube\TinderMango\RegularExpression\PatternNode\CapturingGroup;
+use CBerube\TinderMango\RegularExpression\PatternNode\Group\Alternation;
+use CBerube\TinderMango\RegularExpression\PatternNode\Anchor\EndAnchor;
+use CBerube\TinderMango\RegularExpression\PatternNode\Anchor\StartAnchor;
+use CBerube\TinderMango\RegularExpression\PatternNode\Group\CapturingGroup;
 use CBerube\TinderMango\RegularExpression\PatternNode\Literal;
+use CBerube\TinderMango\RegularExpression\PatternNode\Group\NonCapturingGroup;
 
 class ParserTest extends PHPUnit_Framework_Testcase
 {
@@ -43,9 +46,9 @@ class ParserTest extends PHPUnit_Framework_Testcase
         $nodeList = $pattern->getNodeList();
 
         $this->assertCount(1, $nodeList);
-        $this->assertPatternNodeType('Alternation', $nodeList[0]);
+        $this->assertPatternNodeType('Group\\Alternation', $nodeList[0]);
 
-        /** @var $alternation \CBerube\TinderMango\RegularExpression\PatternNode\Alternation */
+        /** @var $alternation \CBerube\TinderMango\RegularExpression\PatternNode\Group\Alternation */
         $alternation = $nodeList[0];
         $alternativeList = $alternation->getAlternativeList();
 
@@ -90,6 +93,57 @@ class ParserTest extends PHPUnit_Framework_Testcase
             new Literal('I can '),
             $expectedCapturingGroup,
             new Literal(' two different values')
+        );
+
+        $pattern = $this->parser->parse($regularExpression);
+
+        $this->assertEquals($expectedNodes, $pattern->getNodeList());
+    }
+
+    public function testLiteralNonCapturingGroup()
+    {
+        $regularExpression = '~This contains a (?:non-capturing) group~';
+
+        $expectedGroup = new NonCapturingGroup();
+        $expectedGroup->addNode(new Literal('non-capturing'));
+
+        $expectedNodes = array(
+            new Literal('This contains a '),
+            $expectedGroup,
+            new Literal(' group')
+        );
+
+        $pattern = $this->parser->parse($regularExpression);
+
+        $this->assertEquals($expectedNodes, $pattern->getNodeList());
+    }
+
+    public function testAnchors()
+    {
+        $regularExpression = '~^This is anchored at the beginning and end$~';
+
+        $expectedNodes = array(
+            new StartAnchor(),
+            new Literal('This is anchored at the beginning and end'),
+            new EndAnchor()
+        );
+
+        $pattern = $this->parser->parse($regularExpression);
+
+        $this->assertEquals($expectedNodes, $pattern->getNodeList());
+    }
+
+    public function testSimpleQuantifiers()
+    {
+        $regularExpression = '~ABC+DEF*HIJ?~';
+
+        $expectedNodes = array(
+            new Literal('AB'),
+            new Literal('C', 1, null),
+            new Literal('DE'),
+            new Literal('F', 0, null),
+            new Literal('HI'),
+            new Literal('J', 0, 1)
         );
 
         $pattern = $this->parser->parse($regularExpression);
